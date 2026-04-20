@@ -2,7 +2,6 @@ name: Python Tests on Tag
 
 on:
   push:
-    # Esto hará que el flujo se dispare cuando crees un tag que empiece por 'v'
     tags:
       - 'v*' 
 

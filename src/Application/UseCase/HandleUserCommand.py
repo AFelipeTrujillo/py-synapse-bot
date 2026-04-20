@@ -1,17 +1,17 @@
 from src.Application.DTO.UserActivityDTO import UserActivityDTO
 from src.Application.Factory.UserFactory import UserFactory
 from src.Domain.Repository.UserRepository import UserRepository
-
+from src.Domain.Constant.Action import Action
 
 class HandleUserCommand:
 
     def __init__(self, user_repository: UserRepository):
         self.user_repository = user_repository
 
-    def execute(self, dto: UserActivityDTO, is_admin: bool, has_command: bool) -> str:
+    def execute(self, dto: UserActivityDTO, is_admin: bool, has_command: bool) -> Action:
 
         if is_admin:
-            return "allow"
+            return Action.ALLOW
 
         user = self.user_repository.find_by_id(dto.user_id)
 
@@ -22,9 +22,9 @@ class HandleUserCommand:
             user.record_spam_activity()
             self.user_repository.save(user)
         else:
-            return "allow"
+            return Action.ALLOW
 
         if user.is_muted:
-            return "mute"
+            return Action.MUTE
 
-        return "delete"
+        return Action.DELETE

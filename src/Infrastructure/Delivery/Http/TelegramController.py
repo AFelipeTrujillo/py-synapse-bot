@@ -3,6 +3,7 @@ from telegram.constants import ChatType
 from telegram.ext import ContextTypes
 
 # Use Cases
+from src.Domain.Constant.Action import Action
 from src.Application.DTO.UserActivityDTO import UserActivityDTO
 from src.Application.UseCase.FilterBotUnauthorized import FilterBotUnauthorized
 from src.Application.UseCase.HandleUserCommand import HandleUserCommand
@@ -91,7 +92,7 @@ class TelegramController:
         has_command_in_caption = any(entity.type == "bot_command" for entity in (message.caption_entities or []))
 
         bot_decision = self.handle_bot_unauthorized.execute(dto = dto, is_bot = is_bot)
-        if bot_decision != "allow":
+        if bot_decision != Action.ALLOW:
             return await self._apply_bot_sanction(bot_decision, update, context)
 
         user_command_decision = self.handle_user_command.execute(
@@ -99,20 +100,20 @@ class TelegramController:
             is_admin=is_admin,
             has_command=(has_command or has_command_in_caption)
         )
-        if user_command_decision != "allow":
+        if user_command_decision != Action.ALLOW:
             return await self._apply_user_command_sanction(user_command_decision, update, context)
 
         link_decision = self.handle_filter_link_use_case.execute(dto, is_admin)
-        if link_decision != "allow":
+        if link_decision != Action.ALLOW:
             return await self._apply_link_sanction(link_decision, update, context)
 
         inline_decision = self.handle_filter_inline_buttons.execute(dto, is_admin)
-        if inline_decision != "allow":
+        if inline_decision != Action.ALLOW:
             return await self._apply_inline_buttons(inline_decision, update, context)
 
 
         spam_decision = self.handle_message_case.execute(dto)
-        if spam_decision != "allow":
+        if spam_decision != Action.ALLOW:
             return await self._apply_spam_sanction(spam_decision, update, context)
 
 
@@ -156,12 +157,12 @@ class TelegramController:
             is_admin=is_admin
         )
 
-        if "delete" in decision:
+        if Action.DELETE in decision:
             content = update.message.text or "[Media/Other]"
             await update.message.delete()
             await self._send_owner_report(tg_user, chat, content, context)
             
-            if decision == "mute_and_delete":
+            if decision == Action.MUTE_AND_DELETE:
                 await self._mute_user(chat.id, tg_user, context, reason="Link violation limit")
             
             return True
@@ -241,10 +242,10 @@ class TelegramController:
 
     async def _apply_link_sanction(self, decision: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-        if decision == "delete" or decision == "mute_and_delete":
+        if decision == Action.DELETE or decision == Action.MUTE_AND_DELETE:
             await update.message.delete()
 
-        if decision == "mute_and_delete":
+        if decision == Action.MUTE_AND_DELETE:
             await self._mute_user(
                 update.effective_chat.id,
                 update.effective_user,
@@ -258,7 +259,7 @@ class TelegramController:
         if decision == "warning":
             await update.message.delete()
             await update.message.reply_text(f"⚠️ {update.effective_user.first_name}, slow down! Don't spam.")
-        elif decision == "mute":
+        elif decision == Action.MUTE:
             # TODO: Create the silicen mode from .env
             # await update.message.reply_text(f"🔇 {update.effective_user.first_name} has been muted for flooding the chat.")
             await update.message.delete()
@@ -271,7 +272,7 @@ class TelegramController:
 
     async def _apply_inline_buttons(self, decision: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-        if decision == "delete":
+        if decision == Action.DELETE:
             try:
                 await update.message.delete()
             except Exception as e:
@@ -282,7 +283,7 @@ class TelegramController:
 
     async def _apply_bot_sanction(self, decision, update, context):
 
-        if decision == "delete":
+        if decision == Action.DELETE:
             try:
                 await update.message.delete()
             except Exception as e:
@@ -290,13 +291,13 @@ class TelegramController:
 
     async def _apply_user_command_sanction(self, decision: str, update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-        if decision == "delete":
+        if decision == Action.DELETE:
             try:
                 await update.message.delete()
             except Exception as e:
                 print(f"TelegramControler._apply_user_command_sanction.delete: {e}")
 
-        elif decision == "mute":
+        elif decision == Action.MUTE:
             try:
                 await update.message.delete()
                 await self._mute_user(

@@ -1,4 +1,5 @@
 from src.Domain.Entity.User import User
+from src.Domain.Constant.Action import Action
 from src.Domain.ValueObject.TelegramProfile import TelegramProfile
 
 from src.Application.Factory.UserFactory import UserFactory
@@ -12,15 +13,15 @@ class FilterLink:
     def __init__(self, user_repository: UserRepository):
         self.user_repository : UserRepository = user_repository
 
-    def execute(self, dto: UserActivityDTO, is_admin: bool) -> str:
+    def execute(self, dto: UserActivityDTO, is_admin: bool) -> Action:
 
         user = self.user_repository.find_by_id(dto.user_id)
 
         if dto.user_id == settings.OWNER_ID or is_admin or (user and user.is_whitelisted):
-            return "allow"
+            return Action.ALLOW
         
         if not dto.has_links:
-            return "allow"
+            return Action.ALLOW
         
         if not user:
             user = UserFactory.create_from_dto(dto = dto)
@@ -35,7 +36,7 @@ class FilterLink:
         self.user_repository.save(user)
 
         if user.is_muted:
-            return "mute_and_delete"
+            return Action.MUTE_AND_DELETE
         
-        return "delete"
+        return Action.DELETE
         
