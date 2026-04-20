@@ -1,3 +1,5 @@
+from venv import logger
+
 from telegram import Update, ChatPermissions
 from telegram.constants import ChatType
 from telegram.ext import ContextTypes
@@ -150,14 +152,14 @@ class TelegramController:
         member = await chat.get_member(tg_user.id)
         is_admin = member.status in ['administrator', 'creator']
 
+        dto = self._extract_dto(update)
+
         decision = self.handle_filter_link_use_case.execute(
-            user_id=tg_user.id,
-            first_name=tg_user.first_name,
-            has_entities=True,
+            dto=dto,
             is_admin=is_admin
         )
 
-        if Action.DELETE in decision:
+        if decision in [Action.DELETE, Action.MUTE_AND_DELETE]:
             content = update.message.text or "[Media/Other]"
             await update.message.delete()
             await self._send_owner_report(tg_user, chat, content, context)

@@ -5,6 +5,7 @@ from unittest.mock import patch
 
 from src.Application.DTO.UserActivityDTO import UserActivityDTO
 from src.Application.UseCase.FilterBotUnauthorized import FilterBotUnauthorized
+from src.Domain.Constant.Action import Action
 
 
 class TestHandleBot:
@@ -28,7 +29,7 @@ class TestHandleBot:
             )
 
             decision = filter_use_case.execute(dto= dto, is_bot= True)
-            assert decision == "delete"
+            assert decision == Action.DELETE
 
     def test_handle_known_bot(self, filter_use_case, user_repository):
 
@@ -40,5 +41,5 @@ class TestHandleBot:
             )
 
             decision = filter_use_case.execute(dto= dto, is_bot= True)
-            assert decision == "allow"
+            assert decision == Action.ALLOW
 

@@ -1,6 +1,11 @@
+from tkinter.constants import ACTIVE
+
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from telegram import MessageEntity
+
+from src.Domain.Constant.Action import Action
+
 
 @pytest.mark.asyncio
 class TestTelegramControllerLinks:
@@ -37,7 +42,7 @@ class TestTelegramControllerLinks:
         member.status = 'member'
         update.effective_chat.get_member.return_value = member
 
-        controller.handle_filter_link_use_case.execute.return_value = "delete"
+        controller.handle_filter_link_use_case.execute.return_value = Action.DELETE
 
         result = await controller._handle_link_filtering(update, context)
 

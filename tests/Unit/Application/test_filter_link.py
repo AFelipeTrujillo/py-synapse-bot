@@ -4,6 +4,8 @@ from unittest.mock import MagicMock
 
 from src.Application.DTO.UserActivityDTO import UserActivityDTO
 from src.Application.UseCase.FilterLink import FilterLink
+from src.Domain.Constant.Action import Action
+
 
 class TestFilterLink:
 
@@ -25,5 +27,5 @@ class TestFilterLink:
         
         result = filter_use_case.execute(dto, is_admin=True)
 
-        assert result == "allow"
+        assert result == Action.ALLOW
         assert not user_repository.save.called

@@ -3,6 +3,7 @@ from datetime import datetime
 
 from unittest.mock import MagicMock
 
+from src.Domain.Constant.Action import Action
 from src.Domain.Entity.User import User
 from src.Application.DTO.UserActivityDTO import UserActivityDTO
 from src.Application.UseCase.HandleUserCommand import HandleUserCommand
@@ -31,7 +32,7 @@ class TestHandleUserCommand:
         has_command = True
         result = filter_use_case.execute(dto=dto, is_admin=is_admin, has_command=has_command)
 
-        assert result == "allow"
+        assert result == Action.ALLOW
 
     def test_other_user_send_command_and_mute(self, filter_use_case, user_repository):
 
@@ -65,7 +66,7 @@ class TestHandleUserCommand:
         has_command = True
         result = filter_use_case.execute(dto=dto, is_admin=is_admin, has_command=has_command)
 
-        assert result == "mute"
+        assert result == Action.MUTE
         assert existing_user.is_muted is True
 
     def test_other_user_send_command_and_delete(self, filter_use_case, user_repository):
@@ -100,5 +101,5 @@ class TestHandleUserCommand:
         has_command = True
         result = filter_use_case.execute(dto=dto, is_admin=is_admin, has_command=has_command)
 
-        assert result == "delete"
+        assert result == Action.DELETE
         assert existing_user.is_muted is False
