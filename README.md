@@ -5,9 +5,9 @@
 
 Here are the core use cases for your project, described in professional technical English to highlight the logic and functionality of the system:
 
-* Automated Cross-Platform Broadcasting: Executes scheduled, high-delivery messaging across a network of approved groups and channels, featuring bilingual support and dynamic formatting based on group preferences.
-* Intelligent Link & Spam Filtering: Monitors real-time message streams to detect and neutralize unauthorized links or malicious content, applying automated sanctions such as message deletion or user muting.
-* Seamless Group Synchronization: Features an auto-discovery mechanism that detects "ghost" groups where the bot is present but not yet indexed, ensuring the database remains synchronized with the bot's actual deployment.
-* Proactive Community Moderation: Manages user permissions and moderation states (mute/unmute) through a structured decision-making engine, providing admins with granular control over group safety.
-* Deep-Link Growth Orchestration: Facilitates organic user acquisition by integrating specialized "start" parameters in broadcast buttons, funneling users from partner groups back to the central bot for easy registration.
-* Administrative Oversight & Reporting: Delivers real-time incident reports and registration alerts directly to the system owner, maintaining full transparency of the bot's automated actions.
+* **Automated Cross-Platform Broadcasting**: Executes scheduled, high-delivery messaging across a network of approved groups and channels, featuring bilingual support and dynamic formatting based on group preferences.
+* **Intelligent Link & Spam Filtering**: Monitors real-time message streams to detect and neutralize unauthorized links or malicious content, applying automated sanctions such as message deletion or user muting.
+* **Seamless Group Synchronization**: Features an auto-discovery mechanism that detects "ghost" groups where the bot is present but not yet indexed, ensuring the database remains synchronized with the bot's actual deployment.
+* **Proactive Community Moderation**: Manages user permissions and moderation states (mute/unmute) through a structured decision-making engine, providing admins with granular control over group safety.
+* **Deep-Link Growth Orchestration**: Facilitates organic user acquisition by integrating specialized "start" parameters in broadcast buttons, funneling users from partner groups back to the central bot for easy registration.
+* **Administrative Oversight & Reporting**: Delivers real-time incident reports and registration alerts directly to the system owner, maintaining full transparency of the bot's automated actions.
